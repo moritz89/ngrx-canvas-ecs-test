@@ -132,5 +132,8 @@
       }
     }
   },
-  "defaultProject": "ngrx-canvas-test"
+  "defaultProject": "ngrx-canvas-test",
+  "cli": {
+    "defaultCollection": "@ngrx/schematics"
+  }
 }
