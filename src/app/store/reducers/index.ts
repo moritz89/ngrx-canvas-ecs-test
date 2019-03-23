@@ -1,13 +1,17 @@
+import { fabric } from 'fabric';
 import {
   ActionReducer,
   ActionReducerMap,
   createFeatureSelector,
   createSelector,
   MetaReducer
-} from "@ngrx/store";
-import { environment } from "../../../environments/environment";
-import * as fromPumps from "./pumps.reducer";
-import * as fromCanvasAspects from "./canvasAspects.reducer";
+} from '@ngrx/store';
+import { enableBatchReducer } from 'ngrx-batch-action-reducer';
+import { storeFreeze } from 'ngrx-store-freeze';
+import { environment } from '../../../environments/environment';
+import * as fromPumps from './pumps.reducer';
+import * as fromCanvasAspects from './canvasAspects.reducer';
+import { CanvasAspect } from '../models/aspects/canvas';
 // import * as fromElectricalAspects from "./electricalAspects.reducer";
 // import * as fromWaterAspects from "./waterAspect.reducers";
 
@@ -30,15 +34,31 @@ export const metaReducers: MetaReducer<State>[] = !environment.production
   : [];
 
 export const getCanvasAspectsState = (state: State) => state.canvasAspects;
-
 export const getCanvasAspectEntities = createSelector(
   getCanvasAspectsState,
   fromCanvasAspects.getEntities
 );
+export const getChangedCanvasAspectIds = createSelector(
+  getCanvasAspectsState,
+  fromCanvasAspects.getChangedIds
+);
+export const getRemovedCanvasAspectIds = createSelector(
+  getCanvasAspectsState,
+  fromCanvasAspects.getRemovedIds
+);
 
-export const getCanvasAspects = createSelector(
+export const getChangedCanvasObjects = createSelector(
   getCanvasAspectEntities,
-  entities => {
-    return Object.values(entities);
+  getChangedCanvasAspectIds,
+  (entities, ids) => {
+    return ids.map(id => entities[id]);
+  }
+);
+
+export const getRemovedCanvasObjects = createSelector(
+  getCanvasAspectEntities,
+  getRemovedCanvasAspectIds,
+  (entities, ids) => {
+    return ids.map(id => entities[id].object);
   }
 );

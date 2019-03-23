@@ -1,5 +1,5 @@
-import { fabric } from "fabric";
-import "../../../utils/fabric-id";
+import { fabric } from 'fabric';
+import '../../../utils/fabric-id';
 
 /**
  * The aspect of models to be rendered on an HTML5 canvas.
@@ -10,5 +10,5 @@ import "../../../utils/fabric-id";
  */
 export interface CanvasAspect {
   id: number;
-  object: fabric.Object;
+  object: fabric.Rect;
 }

@@ -1,70 +1,94 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { fabric } from "fabric";
-import { Store } from "@ngrx/store";
-import { Observable } from "rxjs";
+import { CanvasAspect } from './../store/models/aspects/canvas';
+import { fabric } from 'fabric';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil, mergeAll } from 'rxjs/operators';
 
-import { bound } from "../utils/bound";
-import * as fromStore from "../store/reducers";
-import { CanvasAspect } from "../store/models/aspects/canvas";
-import * as canvasAspect from "../store/actions/aspect/canvas.actions";
+import { bound } from '../utils/bound';
+import * as fromStore from '../store/reducers';
+import * as pump from '../store/actions/pump.actions';
+import * as canvasAspect from '../store/actions/aspect/canvas.actions';
 
 @Component({
-  selector: "app-floor-planner",
-  templateUrl: "./floor-planner.component.html",
-  styleUrls: ["./floor-planner.component.css"]
+  selector: 'app-floor-planner',
+  templateUrl: './floor-planner.component.html',
+  styleUrls: ['./floor-planner.component.css']
 })
 export class FloorPlannerComponent implements OnInit, OnDestroy {
   canvas: fabric.Canvas;
-  canvasAspects$: Observable<CanvasAspect[]>;
+  changedCanvasObjects$: Observable<CanvasAspect[]>;
+  removedCanvasObjects$: Observable<fabric.Object[]>;
+  public pumpObject = {
+    left: 50,
+    top: 50,
+    strokeWidth: 0,
+    width: 20,
+    height: 30,
+    fill: 'blue'
+  };
+
+  private ngUnsubscribe: Subject<void> = new Subject<void>();
 
   constructor(private store: Store<fromStore.State>) {
-    this.canvas = new fabric.Canvas("canvas");
-    this.canvasAspects$ = store.select(fromStore.getCanvasAspectEntities);
+    this.changedCanvasObjects$ = store.select(
+      fromStore.getChangedCanvasObjects
+    );
+    this.removedCanvasObjects$ = store.select(
+      fromStore.getRemovedCanvasObjects
+    );
+
+    this.changedCanvasObjects$
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        mergeAll()
+      )
+      .subscribe(canvasAspect2 => {
+        console.log(new fabric.Rect(this.pumpObject));
+        if (canvasAspect2) {
+          this.canvas.add(canvasAspect2.object);
+        }
+      });
+    this.removedCanvasObjects$
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        mergeAll()
+      )
+      .subscribe(fabricObject => {
+        this.canvas.remove(fabricObject);
+      });
   }
 
   ngOnInit() {
-    this.canvas.backgroundColor = "gray";
+    this.canvas = new fabric.Canvas('canvas');
+    this.canvas.backgroundColor = 'gray';
     this.canvas.renderAll();
 
     this.canvas.on({
-      "object:moved": this.objectMovedHandler
+      'object:moved': this.objectMovedHandler
     });
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 
   @bound
   private objectMovedHandler(options: any) {
-    this.store.dispatch(new canvasAspect.SnapCanvass(options.target));
-
-    if (!this.isSnapped(options.target)) {
-      // this.snapObject(options.target);
-    }
-  }
-
-  private isSnapped(object: fabric.Object): boolean {
-    // const boundingRect = object.getBoundingRect();
-    // if (
-    //   boundingRect.left % this.gridSpacingY ||
-    //   boundingRect.top % this.gridSpacingX
-    // ) {
-    //   return false;
-    // } else {
-    //   return true;
+    // this.store.dispatch(new canvasAspect2.SnapCanvass(options.target));
+    // if (!this.isSnapped(options.target)) {
+    // this.snapObject(options.target);
     // }
-    return true;
   }
 
   create() {
-    //   for (let i = 0; i < 10000; i++) {
-    //     new Pump(
-    //       this.canvas,
-    //       this.waterCycle,
-    //       this.electricalGrid,
-    //       this.electricalGrid2,
-    //       this.electricalGrid3
-    //     );
-    //   }
+    this.store.dispatch(
+      new canvasAspect.AddFabricObject({
+        itemId: 1,
+        object: new fabric.Rect(this.pumpObject)
+      })
+    );
   }
 
   delete() {

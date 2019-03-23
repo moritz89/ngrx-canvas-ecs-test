@@ -1,8 +1,10 @@
-import { Action } from "@ngrx/store";
+import { fabric } from 'fabric';
+import { Action } from '@ngrx/store';
 
 export enum CanvasActionTypes {
-  LoadCanvass = "[Canvas] Load Canvass",
-  SnapCanvass = "[Canvas] Snap Canvass"
+  LoadCanvass = '[Canvas] Load Canvass',
+  SnapCanvass = '[Canvas] Snap Canvass',
+  AddFabricObject = '[Canvas] Add Canvass'
 }
 
 export class LoadCanvass implements Action {
@@ -19,4 +21,15 @@ interface SnapCanvassPayload {
   itemId: number;
 }
 
-export type CanvasActions = LoadCanvass | SnapCanvass;
+export class AddFabricObject implements Action {
+  readonly type = CanvasActionTypes.AddFabricObject;
+
+  constructor(public payload: AddFabricObjectPayload) {}
+}
+
+interface AddFabricObjectPayload {
+  itemId: number;
+  object: fabric.Object;
+}
+
+export type CanvasActions = LoadCanvass | SnapCanvass | AddFabricObject;
