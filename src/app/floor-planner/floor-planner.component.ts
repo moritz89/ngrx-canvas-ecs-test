@@ -17,8 +17,14 @@ import * as canvasAspect from '../store/actions/aspect/canvas.actions';
 })
 export class FloorPlannerComponent implements OnInit, OnDestroy {
   canvas: fabric.Canvas;
+
+  // To be able to reference fabric objects by their ID, they are stored here
+  objects: { [id: number]: fabric.Object } = {};
+
+  addedFabricObject$: Observable<fabric.Object[]>;
   changedCanvasObjects$: Observable<CanvasAspect[]>;
-  removedCanvasObjects$: Observable<fabric.Object[]>;
+  removedCanvasObjects$: Observable<CanvasAspect[]>;
+
   public pumpObject = {
     left: 50,
     top: 50,
@@ -31,6 +37,7 @@ export class FloorPlannerComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<void> = new Subject<void>();
 
   constructor(private store: Store<fromStore.State>) {
+    this.addedFabricObject$ = store.select(fromStore.getAddedFabricObject);
     this.changedCanvasObjects$ = store.select(
       fromStore.getChangedCanvasObjects
     );
@@ -38,25 +45,37 @@ export class FloorPlannerComponent implements OnInit, OnDestroy {
       fromStore.getRemovedCanvasObjects
     );
 
+    this.addedFabricObject$
+      .pipe(takeUntil(this.ngUnsubscribe), mergeAll())
+      .subscribe(object => {
+        if (this.objects.hasOwnProperty(Number(object.name))) {
+          this.canvas.remove(this.objects[Number(object.name)]);
+          console.warn('readding existing objects');
+        }
+        this.canvas.add(object);
+        this.objects[Number(object.name)] = object;
+      });
+
     this.changedCanvasObjects$
       .pipe(
         takeUntil(this.ngUnsubscribe),
         mergeAll()
       )
-      .subscribe(canvasAspect2 => {
-        console.log(new fabric.Rect(this.pumpObject));
-        if (canvasAspect2) {
-          this.canvas.add(canvasAspect2.object);
-        }
-      });
-    this.removedCanvasObjects$
-      .pipe(
-        takeUntil(this.ngUnsubscribe),
-        mergeAll()
-      )
-      .subscribe(fabricObject => {
-        this.canvas.remove(fabricObject);
-      });
+      .subscribe
+      // canvasAspect2 => {
+      // console.log(new fabric.Rect(this.pumpObject));
+      // if (canvasAspect2) {
+      //   this.canvas.add(canvasAspect2.object);
+      // }}
+      ();
+    // this.removedCanvasObjects$
+    //   .pipe(
+    //     takeUntil(this.ngUnsubscribe),
+    //     mergeAll()
+    //   )
+    //   .subscribe(fabricObject => {
+    //     this.canvas.remove(fabricObject);
+    //   });
   }
 
   ngOnInit() {
@@ -85,8 +104,13 @@ export class FloorPlannerComponent implements OnInit, OnDestroy {
   create() {
     this.store.dispatch(
       new canvasAspect.AddFabricObject({
-        itemId: 1,
-        object: new fabric.Rect(this.pumpObject)
+        type: 'Rectangle',
+        left: this.pumpObject.left,
+        top: this.pumpObject.top,
+        width: this.pumpObject.width,
+        height: this.pumpObject.height,
+        strokeWidth: this.pumpObject.strokeWidth,
+        fill: this.pumpObject.fill
       })
     );
   }
@@ -95,5 +119,10 @@ export class FloorPlannerComponent implements OnInit, OnDestroy {
     //   for (let pump of this.waterCycle.pumps) {
     //     pump.delete();
     //   }
+  }
+
+  clear() {
+    this.canvas.clear();
+    this.objects = {};
   }
 }

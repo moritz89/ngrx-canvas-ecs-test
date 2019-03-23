@@ -1,9 +1,9 @@
-import { fabric } from "fabric";
+import { fabric } from 'fabric';
 
-declare module "fabric" {
+declare module 'fabric' {
   namespace fabric {
     interface Object {
-      itemId: number;
+      id: number;
     }
   }
 }

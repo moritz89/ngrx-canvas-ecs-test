@@ -12,6 +12,7 @@ import { environment } from '../../../environments/environment';
 import * as fromPumps from './pumps.reducer';
 import * as fromCanvasAspects from './canvasAspects.reducer';
 import { CanvasAspect } from '../models/aspects/canvas';
+import { toFabricObject } from './toFabricObject';
 // import * as fromElectricalAspects from "./electricalAspects.reducer";
 // import * as fromWaterAspects from "./waterAspect.reducers";
 
@@ -38,6 +39,10 @@ export const getCanvasAspectEntities = createSelector(
   getCanvasAspectsState,
   fromCanvasAspects.getEntities
 );
+export const getAddedCanvasAspectIds = createSelector(
+  getCanvasAspectsState,
+  fromCanvasAspects.getAddedIds
+)
 export const getChangedCanvasAspectIds = createSelector(
   getCanvasAspectsState,
   fromCanvasAspects.getChangedIds
@@ -45,6 +50,14 @@ export const getChangedCanvasAspectIds = createSelector(
 export const getRemovedCanvasAspectIds = createSelector(
   getCanvasAspectsState,
   fromCanvasAspects.getRemovedIds
+);
+
+export const getAddedFabricObject = createSelector(
+  getCanvasAspectEntities,
+  getAddedCanvasAspectIds,
+  (entities, ids) => {
+    return ids.map(id => toFabricObject(entities[id]));
+  }
 );
 
 export const getChangedCanvasObjects = createSelector(
@@ -59,6 +72,6 @@ export const getRemovedCanvasObjects = createSelector(
   getCanvasAspectEntities,
   getRemovedCanvasAspectIds,
   (entities, ids) => {
-    return ids.map(id => entities[id].object);
+    return ids.map(id => entities[id]);
   }
 );

@@ -5,6 +5,7 @@ import * as canvasAspect from '../actions/aspect/canvas.actions';
 export interface State {
   ids: number[];
   entities: { [id: number]: CanvasAspect };
+  addedIds: number[];
   changedIds: number[];
   removedIds: number[];
 }
@@ -12,6 +13,7 @@ export interface State {
 export const initialState: State = {
   ids: [],
   entities: {},
+  addedIds: [],
   changedIds: [],
   removedIds: []
 };
@@ -23,12 +25,14 @@ export function reducer(state = initialState, action: canvasAspect.AddFabricObje
     case canvasAspect.CanvasActionTypes.AddFabricObject: {
       idCounter += 1;
       const id = idCounter;
+
       return {
-        ids: [...state.ids, idCounter],
+        ids: [...(state.ids), idCounter],
         entities: Object.assign({}, state.entities,  {
-          [id]: {id, object: action.payload.object}
+          [id]: {id, ...(action.payload)}
         }),
-        changedIds: [idCounter],
+        addedIds: [idCounter],
+        changedIds: [],
         removedIds: []
       };
     }
@@ -40,5 +44,7 @@ export function reducer(state = initialState, action: canvasAspect.AddFabricObje
 }
 
 export const getEntities = (state: State) => state.entities;
+export const getAddedIds = (state: State) => state.addedIds;
 export const getChangedIds = (state: State) => state.changedIds;
 export const getRemovedIds = (state: State) => state.removedIds;
+

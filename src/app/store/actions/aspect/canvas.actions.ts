@@ -1,5 +1,7 @@
 import { fabric } from 'fabric';
 import { Action } from '@ngrx/store';
+import { CanvasAspect } from '../../models/aspects/canvas';
+import { Omit } from '../../../utils/omit';
 
 export enum CanvasActionTypes {
   LoadCanvass = '[Canvas] Load Canvass',
@@ -27,9 +29,6 @@ export class AddFabricObject implements Action {
   constructor(public payload: AddFabricObjectPayload) {}
 }
 
-interface AddFabricObjectPayload {
-  itemId: number;
-  object: fabric.Object;
-}
+export interface AddFabricObjectPayload extends Omit<CanvasAspect, 'id'> {}
 
 export type CanvasActions = LoadCanvass | SnapCanvass | AddFabricObject;
