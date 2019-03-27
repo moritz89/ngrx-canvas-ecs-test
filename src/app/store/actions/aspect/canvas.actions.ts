@@ -19,7 +19,7 @@ export class MoveObjectAction implements Action {
 
 export interface MoveObjectPayload {
   id: number;
-  point: fabric.Point;
+  point_tl: fabric.Point;
 }
 
 export class AddObjectAction implements Action {

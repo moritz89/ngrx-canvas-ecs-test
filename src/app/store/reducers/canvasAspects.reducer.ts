@@ -21,6 +21,7 @@ export const initialState: State = adapter.getInitialState({
 });
 
 let idCounter = 0;
+const gridSize = 50;
 
 export function reducer(
   state = initialState,
@@ -39,14 +40,11 @@ export function reducer(
       return newState;
     }
     case canvasAspect.MoveObject: {
-      const newPoint = snapObject(
-        action.payload.point,
-        gridSize
-      );
+      const newPoint = snapPoint(action.payload.point_tl, gridSize);
       const newState = adapter.updateOne(
         {
           id: action.payload.id,
-          changes: { top: newPoint.x, left: newPoint.y}
+          changes: { left: newPoint.x, top: newPoint.y }
         },
         state
       );
@@ -67,12 +65,7 @@ export const getAddedIds = (state: State) => state.addedIds;
 export const getChangedIds = (state: State) => state.changedIds;
 export const getRemovedIds = (state: State) => state.removedIds;
 
-function snapObject(point: fabric.Point, gridSpacing: number): fabric.Point {
-  if(point.type !== 'tl') {
-    console.warn('Can only snap top-left points');
-    return point;
-  }
-
+function snapPoint(point: fabric.Point, gridSpacing: number): fabric.Point {
   const snappedPoint = point.clone();
 
   // Check if to snap left or right grid
@@ -82,7 +75,7 @@ function snapObject(point: fabric.Point, gridSpacing: number): fabric.Point {
     snappedPoint.setX(point.x + (gridSpacing - (point.x % gridSpacing)));
   }
 
-  // Check if to snap the upper or lower grid
+  // Check whether to snap to the upper or lower grid
   if (point.y % gridSpacing < gridSpacing / 2) {
     snappedPoint.setY(point.y - (point.y % gridSpacing));
   } else {

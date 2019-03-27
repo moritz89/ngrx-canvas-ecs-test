@@ -66,7 +66,7 @@ export class FloorPlannerComponent implements OnInit, OnDestroy {
       )
       .subscribe(object => {
         console.log(object);
-        this.objects[object.id].set({top: object.top, left: object.left});
+        this.objects[object.id].set({ top: object.top, left: object.left });
         this.objects[object.id].setCoords();
         this.canvas.renderAll();
       });
@@ -103,10 +103,11 @@ export class FloorPlannerComponent implements OnInit, OnDestroy {
   @bound
   private objectMovedHandler(options: any) {
     const target = options.target as fabric.Object;
+    console.log(target.aCoords);
     this.store.dispatch(
       new canvasAspect.MoveObjectAction({
         id: Number(target.name),
-        point: target.aCoords.tl
+        point_tl: target.aCoords.tl
       })
     );
   }
