@@ -31,7 +31,7 @@ export const reducers: ActionReducerMap<State> = {
 };
 
 export const metaReducers: MetaReducer<State>[] = !environment.production
-  ? []
+  ? [storeFreeze]
   : [];
 
 export const getCanvasAspectsState = (state: State) => state.canvasAspects;
@@ -42,7 +42,7 @@ export const getCanvasAspectEntities = createSelector(
 export const getAddedCanvasAspectIds = createSelector(
   getCanvasAspectsState,
   fromCanvasAspects.getAddedIds
-)
+);
 export const getChangedCanvasAspectIds = createSelector(
   getCanvasAspectsState,
   fromCanvasAspects.getChangedIds

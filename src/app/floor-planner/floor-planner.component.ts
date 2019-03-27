@@ -2,7 +2,7 @@ import { CanvasAspect } from './../store/models/aspects/canvas';
 import { fabric } from 'fabric';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, ObjectUnsubscribedError } from 'rxjs';
 import { takeUntil, mergeAll } from 'rxjs/operators';
 
 import { bound } from '../utils/bound';
@@ -46,11 +46,14 @@ export class FloorPlannerComponent implements OnInit, OnDestroy {
     );
 
     this.addedFabricObject$
-      .pipe(takeUntil(this.ngUnsubscribe), mergeAll())
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        mergeAll()
+      )
       .subscribe(object => {
         if (this.objects.hasOwnProperty(Number(object.name))) {
           this.canvas.remove(this.objects[Number(object.name)]);
-          console.warn('readding existing objects');
+          console.warn('re-adding existing objects');
         }
         this.canvas.add(object);
         this.objects[Number(object.name)] = object;
@@ -61,13 +64,17 @@ export class FloorPlannerComponent implements OnInit, OnDestroy {
         takeUntil(this.ngUnsubscribe),
         mergeAll()
       )
-      .subscribe
-      // canvasAspect2 => {
-      // console.log(new fabric.Rect(this.pumpObject));
-      // if (canvasAspect2) {
-      //   this.canvas.add(canvasAspect2.object);
-      // }}
-      ();
+      .subscribe(object => {
+        console.log(object);
+        this.objects[object.id].set({top: object.top, left: object.left});
+        this.objects[object.id].setCoords();
+        this.canvas.renderAll();
+      });
+    // canvasAspect2 => {
+    // console.log(new fabric.Rect(this.pumpObject));
+    // if (canvasAspect2) {
+    //   this.canvas.add(canvasAspect2.object);
+    // }}
     // this.removedCanvasObjects$
     //   .pipe(
     //     takeUntil(this.ngUnsubscribe),
@@ -95,15 +102,18 @@ export class FloorPlannerComponent implements OnInit, OnDestroy {
 
   @bound
   private objectMovedHandler(options: any) {
-    // this.store.dispatch(new canvasAspect2.SnapCanvass(options.target));
-    // if (!this.isSnapped(options.target)) {
-    // this.snapObject(options.target);
-    // }
+    const target = options.target as fabric.Object;
+    this.store.dispatch(
+      new canvasAspect.MoveObjectAction({
+        id: Number(target.name),
+        point: target.aCoords.tl
+      })
+    );
   }
 
   create() {
     this.store.dispatch(
-      new canvasAspect.AddFabricObject({
+      new canvasAspect.AddObjectAction({
         type: 'Rectangle',
         left: this.pumpObject.left,
         top: this.pumpObject.top,

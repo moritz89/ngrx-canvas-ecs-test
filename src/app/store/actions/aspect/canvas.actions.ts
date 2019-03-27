@@ -3,32 +3,31 @@ import { Action } from '@ngrx/store';
 import { CanvasAspect } from '../../models/aspects/canvas';
 import { Omit } from '../../../utils/omit';
 
-export enum CanvasActionTypes {
-  LoadCanvass = '[Canvas] Load Canvass',
-  SnapCanvass = '[Canvas] Snap Canvass',
-  AddFabricObject = '[Canvas] Add Canvass'
+export const Load = '[Canvas] Load Canvases';
+export const MoveObject = '[Canvas] Move Object';
+export const AddObject = '[Canvas] Add Object';
+
+export class LoadAction implements Action {
+  readonly type = Load;
 }
 
-export class LoadCanvass implements Action {
-  readonly type = CanvasActionTypes.LoadCanvass;
+export class MoveObjectAction implements Action {
+  readonly type = MoveObject;
+
+  constructor(public payload: MoveObjectPayload) {}
 }
 
-export class SnapCanvass implements Action {
-  readonly type = CanvasActionTypes.SnapCanvass;
-
-  constructor(public payload: SnapCanvassPayload) {}
+export interface MoveObjectPayload {
+  id: number;
+  point: fabric.Point;
 }
 
-interface SnapCanvassPayload {
-  itemId: number;
+export class AddObjectAction implements Action {
+  readonly type = AddObject;
+
+  constructor(public payload: AddObjectPayload) {}
 }
 
-export class AddFabricObject implements Action {
-  readonly type = CanvasActionTypes.AddFabricObject;
+export interface AddObjectPayload extends Omit<CanvasAspect, 'id'> {}
 
-  constructor(public payload: AddFabricObjectPayload) {}
-}
-
-export interface AddFabricObjectPayload extends Omit<CanvasAspect, 'id'> {}
-
-export type CanvasActions = LoadCanvass | SnapCanvass | AddFabricObject;
+export type Actions = LoadAction | MoveObjectAction | AddObjectAction;
