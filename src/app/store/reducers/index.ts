@@ -31,8 +31,8 @@ export const reducers: ActionReducerMap<State> = {
 };
 
 export const metaReducers: MetaReducer<State>[] = !environment.production
-  ? [storeFreeze]
-  : [];
+  ? [storeFreeze, enableBatchReducer]
+  : [enableBatchReducer];
 
 export const getCanvasAspectsState = (state: State) => state.canvasAspects;
 export const getCanvasAspectEntities = createSelector(

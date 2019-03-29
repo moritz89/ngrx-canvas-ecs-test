@@ -24,8 +24,8 @@ export class PumpEffects {
   public fabricId = 0;
 
   @Effect()
-  createNewPump$: Observable<Action> = this.actions$.pipe(
-    ofType(pump.CreateNew),
+  requestNewPump$: Observable<Action> = this.actions$.pipe(
+    ofType(pump.CreateNew)
     // mapTo(new pump.AddAction({id: 0, name: '', fabricId: 0}))
     // tap(action => this.pumpId += 1),
     // tap(action => this.fabricId += 1),
