@@ -43,3 +43,9 @@ testem.log
 .DS_Store
 Thumbs.db
 venv
+
+# Python
+**/__pycache__/**
+
+# Django
+db.sqlite3

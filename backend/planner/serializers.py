@@ -15,16 +15,12 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         fields = ("url", "name")
 
 
-class PumpSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Pump
-        fields = ("name", "canvasAspect")
-
-
 class CanvasAspectSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = CanvasAspect
         fields = (
+            "id",
+            "url",
             "type",
             "top",
             "left",
@@ -35,3 +31,18 @@ class CanvasAspectSerializer(serializers.HyperlinkedModelSerializer):
             "fill",
         )
 
+class PumpSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Pump
+        fields = ("id", "url", "name", "canvasAspect")
+        depth = 1
+
+    # def create(self, validated_data):
+    #     # import ipdb
+    #     # ipdb.set_trace()
+    #     print(validated_data)
+    #     canvas_aspect_data = validated_data.pop('canvasAspect')
+    #     print(canvas_aspect_data)
+    #     canvas_aspect = CanvasAspect.objects.create(**canvas_aspect_data)
+    #     pump = Pump.objects.create(canvas_aspect=canvas_aspect, **validated_data)
+    #     return pump

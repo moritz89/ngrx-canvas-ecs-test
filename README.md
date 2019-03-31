@@ -22,6 +22,9 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
-## Further help
+# Backend
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Examples of how to GET and POST data to the API:
+
+- `curl -H "Content-Type: application/json" -X GET http://localhost:8000/pumps/`
+- `curl -d '{"name":"secondary pump", "canvasAspect":"http://localhost:8000/canvas-aspect/1/"}' -H "Content-Type: application/json" -X POST http://localhost:8000/pumps/`

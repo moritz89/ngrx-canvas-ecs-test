@@ -17,14 +17,19 @@ from django.contrib import admin
 from django.urls import path
 
 from django.urls import include, path
-from rest_framework import routers
+from rest_framework.routers import DefaultRouter
+from rest_framework_extensions.routers import NestedRouterMixin
 from planner import views
 
-router = routers.DefaultRouter()
+class NestedDefaultRouter(NestedRouterMixin, DefaultRouter):
+    pass
+
+router = NestedDefaultRouter()
 router.register(r"users", views.UserViewSet)
 router.register(r"groups", views.GroupViewSet)
-router.register(r"pumps", views.PumpViewSet)
-router.register
+pump_router = router.register(r"pumps", views.PumpViewSet)
+pump_router.register("canvas-aspect", views.CanvasAspectViewSet, base_name="pump-canvas-aspect", parents_query_lookups=["canvasAspect"])
+router.register(r"canvas-aspect", views.CanvasAspectViewSet)
 
 
 urlpatterns = [
