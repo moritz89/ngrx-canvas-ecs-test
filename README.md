@@ -27,4 +27,4 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 Examples of how to GET and POST data to the API:
 
 - `curl -H "Content-Type: application/json" -X GET http://localhost:8000/pumps/`
-- `curl -d '{"name":"secondary pump", "canvasAspect":"http://localhost:8000/canvas-aspect/1/"}' -H "Content-Type: application/json" -X POST http://localhost:8000/pumps/`
+- `curl -d '{"name":"tertiary pump","canvasAspect":{"type":"svg","top":110.0,"left":160.0,"width":30.0,"height":40,"svgUrl":"go.html","strokeWidth":0.0,"fill":"black"}}' -H "Content-Type: application/json" -X POST http://localhost:8000/pumps/`

@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User, Group
 
 from rest_framework import viewsets
-from rest_framework_extensions.mixins import NestedViewSetMixin
 from .serializers import UserSerializer, GroupSerializer, PumpSerializer, CanvasAspectSerializer
 from .models import CanvasAspect, Pipe, Pump
 
@@ -24,7 +23,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
 
-class PumpViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+class PumpViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows pumps to be viewed or edited
     """
@@ -33,7 +32,7 @@ class PumpViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     serializer_class = PumpSerializer
 
 
-class CanvasAspectViewSet( viewsets.ModelViewSet):
+class CanvasAspectViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows canvas aspects to be viewed or edited
     """
