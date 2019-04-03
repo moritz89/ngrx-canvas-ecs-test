@@ -5,9 +5,9 @@ import * as canvasAspect from '../actions/aspect/canvas.actions';
 const gridSpacing = 50;
 
 export interface State extends EntityState<CanvasAspect> {
-  addedIds: number[];
-  changedIds: number[];
-  removedIds: number[];
+  addedIds: string[];
+  changedIds: string[];
+  removedIds: string[];
 }
 
 export const adapter: EntityAdapter<CanvasAspect> = createEntityAdapter<
@@ -20,7 +20,6 @@ export const initialState: State = adapter.getInitialState({
   removedIds: []
 });
 
-let idCounter = 0;
 const gridSize = 50;
 
 export function reducer(
@@ -29,12 +28,8 @@ export function reducer(
 ): State {
   switch (action.type) {
     case canvasAspect.AddObject: {
-      idCounter += 1;
-      const newState = adapter.addOne(
-        { id: idCounter, ...action.payload },
-        state
-      );
-      newState.addedIds = [idCounter];
+      const newState = adapter.addOne(action.payload, state);
+      newState.addedIds = [action.payload.id];
       newState.changedIds = [];
       newState.removedIds = [];
       return newState;

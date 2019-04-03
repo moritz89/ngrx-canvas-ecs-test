@@ -5,9 +5,9 @@ export function toFabricObject(canvasAspect: CanvasAspect): fabric.Object {
   switch (canvasAspect.type) {
     case 'Rectangle':
       return new fabric.Rect({
-        name: String(canvasAspect.id),
+        name: canvasAspect.id,
         top: canvasAspect.top,
-        left: canvasAspect.left + 40 * canvasAspect.id,
+        left: canvasAspect.left,
         width: canvasAspect.width,
         height: canvasAspect.height,
         strokeWidth: canvasAspect.strokeWidth,

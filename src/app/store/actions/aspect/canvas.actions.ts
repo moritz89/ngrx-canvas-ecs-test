@@ -1,7 +1,6 @@
 import { fabric } from 'fabric';
 import { Action } from '@ngrx/store';
 import { CanvasAspect } from '../../models/aspects/canvas';
-import { Omit } from '../../../utils/omit';
 
 export const Load = '[Canvas] Load Canvases';
 export const MoveObject = '[Canvas] Move Object';
@@ -11,23 +10,21 @@ export class LoadAction implements Action {
   readonly type = Load;
 }
 
-export class MoveObjectAction implements Action {
+export class MoveAction implements Action {
   readonly type = MoveObject;
 
   constructor(public payload: MoveObjectPayload) {}
 }
 
 export interface MoveObjectPayload {
-  id: number;
+  id: string;
   point_tl: fabric.Point;
 }
 
-export class AddObjectAction implements Action {
+export class AddAction implements Action {
   readonly type = AddObject;
 
-  constructor(public payload: AddObjectPayload) {}
+  constructor(public payload: CanvasAspect) {}
 }
 
-export interface AddObjectPayload extends Omit<CanvasAspect, 'id'> {}
-
-export type Actions = LoadAction | MoveObjectAction | AddObjectAction;
+export type Actions = LoadAction | MoveAction | AddAction;

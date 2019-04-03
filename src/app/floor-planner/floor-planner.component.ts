@@ -9,6 +9,7 @@ import { bound } from '../utils/bound';
 import * as fromStore from '../store/reducers';
 import * as pump from '../store/actions/pump.actions';
 import * as canvasAspect from '../store/actions/aspect/canvas.actions';
+import * as uuid from 'uuid';
 
 @Component({
   selector: 'app-floor-planner',
@@ -105,8 +106,8 @@ export class FloorPlannerComponent implements OnInit, OnDestroy {
     const target = options.target as fabric.Object;
     console.log(target.aCoords);
     this.store.dispatch(
-      new canvasAspect.MoveObjectAction({
-        id: Number(target.name),
+      new canvasAspect.MoveAction({
+        id: target.name,
         point_tl: target.aCoords.tl
       })
     );
@@ -114,7 +115,8 @@ export class FloorPlannerComponent implements OnInit, OnDestroy {
 
   create() {
     this.store.dispatch(
-      new canvasAspect.AddObjectAction({
+      new canvasAspect.AddAction({
+        id: uuid.v4(),
         type: 'Rectangle',
         left: this.pumpObject.left,
         top: this.pumpObject.top,

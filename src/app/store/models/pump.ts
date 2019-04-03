@@ -1,7 +1,5 @@
 export interface Pump {
-  id: number;
-  name: string;
-  canvasId: number;
-  // waterId: number;
-  // electricalId: number;
+  id: string; // UUID
+  name: string; // Human readable name
+  aspectTypes: string[]; // List of used aspect types (canvas, water, electrical)
 }

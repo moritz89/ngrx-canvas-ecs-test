@@ -1,14 +1,14 @@
 import { Action } from '@ngrx/store';
 import { BatchAction } from 'ngrx-batch-action-reducer';
 
-import * as canvasAspect from './aspect/canvas.actions';
+import { Pump } from '../models/pump';
+import { CanvasAspect } from '../models/aspects/canvas';
 
 export const Load = '[Pump] Load Pumps';
 export const Add = '[Pump] Add Pump';
-export const CreateNew = '[Pump] Create New Pump';
-export const RequestNew = '[Pump] Request New Pump';
-export const RequestNewSuccess;
-export const RequestNew;
+export const Create = '[Pump] Create Pump';
+export const CreateSuccess = '[Pump] Create Pump Success';
+export const CreateFailure = '[Pump] Create Pump Failure';
 
 export class LoadAction implements Action {
   readonly type = Load;
@@ -16,20 +16,21 @@ export class LoadAction implements Action {
 
 export class AddAction implements Action {
   readonly type = Add;
-
   constructor(public payload: AddActionPayload) {}
 }
 
 export interface AddActionPayload {
-  id: number;
-  name: string;
-  fabricId: number;
+  pump: Pump;
 }
 
-@BatchAction()
-export class CreateNewAction implements Action {
-  readonly type = CreateNew;
-  constructor(public payload: [AddAction, canvasAspect.AddObjectAction]) {}
+export class CreateAction implements Action {
+  readonly type = Create;
+  constructor(public payload: CreateActionPayload) {}
 }
 
-export type PumpActions = LoadAction | AddAction | CreateNewAction;
+export interface CreateActionPayload {
+  pump: Pump;
+  CanvasAspect: CanvasAspect;
+}
+
+export type PumpActions = LoadAction | AddAction | CreateAction;
