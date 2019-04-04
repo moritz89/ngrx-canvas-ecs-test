@@ -1,4 +1,4 @@
 export interface ElectricalAspect {
-  id: number;
+  id: string;
   powerUsage: number;
 }

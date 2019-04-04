@@ -2,21 +2,21 @@ import { TestBed, inject } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Observable } from 'rxjs';
 
-import { PumpEffects } from './pump.effects';
+import { ItemEffects } from './item.effects';
 
-describe('PumpEffects', () => {
+describe('ItemEffects', () => {
   let actions$: Observable<any>;
-  let effects: PumpEffects;
+  let effects: ItemEffects;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        PumpEffects,
+        ItemEffects,
         provideMockActions(() => actions$)
       ]
     });
 
-    effects = TestBed.get(PumpEffects);
+    effects = TestBed.get(ItemEffects);
   });
 
   it('should be created', () => {

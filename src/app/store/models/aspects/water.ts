@@ -1,5 +1,5 @@
 export interface WaterAspect {
-  id: number;
+  id: string;
   heightIncrease: number;
   previousItems: [];
   followingItems: [];

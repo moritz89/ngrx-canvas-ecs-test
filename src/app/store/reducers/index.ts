@@ -9,22 +9,18 @@ import {
 import { enableBatchReducer } from 'ngrx-batch-action-reducer';
 import { storeFreeze } from 'ngrx-store-freeze';
 import { environment } from '../../../environments/environment';
-import * as fromPumps from './pumps.reducer';
 import * as fromCanvasAspects from './canvasAspects.reducer';
-import { CanvasAspect } from '../models/aspects/canvas';
 import { toFabricObject } from './toFabricObject';
 // import * as fromElectricalAspects from "./electricalAspects.reducer";
 // import * as fromWaterAspects from "./waterAspect.reducers";
 
 export interface State {
-  pumps: fromPumps.State;
   canvasAspects: fromCanvasAspects.State;
   // electricalAspects: fromElectricalAspects.State;
   // waterAspects: fromWaterAspects.State;
 }
 
 export const reducers: ActionReducerMap<State> = {
-  pumps: fromPumps.reducer,
   canvasAspects: fromCanvasAspects.reducer
   // electricalAspects: fromElectricalAspects.reducer
   // waterAspects: fromWaterAspects.reducer

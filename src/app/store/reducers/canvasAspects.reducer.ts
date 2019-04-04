@@ -28,23 +28,23 @@ export function reducer(
 ): State {
   switch (action.type) {
     case canvasAspect.AddObject: {
-      const newState = adapter.addOne(action.payload, state);
-      newState.addedIds = [action.payload.id];
+      const newState = adapter.addOne(action.payload.canvasAspect, state);
+      newState.addedIds = [action.payload.canvasAspect.id];
       newState.changedIds = [];
       newState.removedIds = [];
       return newState;
     }
     case canvasAspect.MoveObject: {
-      const newPoint = snapPoint(action.payload.point_tl, gridSize);
+      const newPoint = snapPoint(action.payload.position.point_tl, gridSize);
       const newState = adapter.updateOne(
         {
-          id: action.payload.id,
+          id: action.payload.position.id,
           changes: { left: newPoint.x, top: newPoint.y }
         },
         state
       );
       newState.addedIds = [];
-      newState.changedIds = [action.payload.id];
+      newState.changedIds = [action.payload.position.id];
       newState.removedIds = [];
       return newState;
     }

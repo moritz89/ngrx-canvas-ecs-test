@@ -3,7 +3,7 @@ import { CanvasAspect } from '../models/aspects/canvas';
 
 export function toFabricObject(canvasAspect: CanvasAspect): fabric.Object {
   switch (canvasAspect.type) {
-    case 'Rectangle':
+    case 'rectangle':
       return new fabric.Rect({
         name: canvasAspect.id,
         top: canvasAspect.top,
