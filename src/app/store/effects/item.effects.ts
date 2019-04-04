@@ -3,15 +3,15 @@ import { Injectable } from '@angular/core';
 
 import { Action } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { Observable, concat, of } from 'rxjs';
-import { concatMap, tap } from 'rxjs/operators';
+import { Observable, concat, of, EMPTY } from 'rxjs';
+import { concatMap, tap, map, mergeMap, catchError } from 'rxjs/operators';
 
 import * as item from '../actions/item.actions';
-// const api = 'http://127.0.0.1:8000/items/';
+const api = 'http://localhost:8000/items/';
 
 @Injectable()
 export class ItemEffects {
-  constructor(private actions$: Actions, private http$: HttpClient) {}
+  constructor(private actions$: Actions, private http: HttpClient) {}
 
   @Effect()
   addItem$: Observable<Action> = this.actions$.pipe(
@@ -19,7 +19,14 @@ export class ItemEffects {
     concatMap(action =>
       concat(
         item.createAddAspectActions(action.payload.aspects),
-        // this.http$.post(api, item.toJSON(action.payload))
+        this.http.post(api, JSON.stringify(action.payload)).pipe(
+          tap(res => console.log(res)),
+          map(res => new item.AddSuccessAction()),
+          catchError(err => {
+            console.log(err);
+            return of(new item.AddFailureAction());
+          })
+        )
       )
     )
   );

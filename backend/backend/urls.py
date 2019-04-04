@@ -23,8 +23,10 @@ from planner import views
 router = routers.DefaultRouter()
 router.register(r"users", views.UserViewSet)
 router.register(r"groups", views.GroupViewSet)
-router.register(r"pumps", views.PumpViewSet)
-router.register(r"canvas-aspect", views.CanvasAspectViewSet)
+router.register(r"canvas-aspects", views.CanvasAspectViewSet)
+router.register(r"electrical-aspects", views.ElectricalAspectViewSet)
+router.register(r"meta-aspects", views.MetaAspectViewSet)
+router.register(r"water-aspects", views.WaterAspectViewSet)
 
 
 urlpatterns = [

@@ -1,8 +1,15 @@
 from django.contrib.auth.models import User, Group
 
 from rest_framework import viewsets
-from .serializers import UserSerializer, GroupSerializer, PumpSerializer, CanvasAspectSerializer
-from .models import CanvasAspect, Pipe, Pump
+from .serializers import (
+    UserSerializer,
+    GroupSerializer,
+    CanvasAspectSerializer,
+    ElectricalAspectSerializer,
+    MetaAspectSerializer,
+    WaterAspectSerializer,
+)
+from .models import CanvasAspect, ElectricalAspect, MetaAspect, WaterAspect
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -23,19 +30,21 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
 
-class PumpViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows pumps to be viewed or edited
-    """
-
-    queryset = Pump.objects.all()
-    serializer_class = PumpSerializer
-
-
 class CanvasAspectViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows canvas aspects to be viewed or edited
-    """
-
     queryset = CanvasAspect.objects.all()
     serializer_class = CanvasAspectSerializer
+
+
+class ElectricalAspectViewSet(viewsets.ModelViewSet):
+    queryset = ElectricalAspect.objects.all()
+    serializer_class = ElectricalAspectSerializer
+
+
+class MetaAspectViewSet(viewsets.ModelViewSet):
+    queryset = MetaAspect.objects.all()
+    serializer_class = MetaAspectSerializer
+
+
+class WaterAspectViewSet(viewsets.ModelViewSet):
+    queryset = WaterAspect.objects.all()
+    serializer_class = WaterAspectSerializer

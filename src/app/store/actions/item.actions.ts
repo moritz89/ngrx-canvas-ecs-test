@@ -45,4 +45,12 @@ export function createAddAspectActions(aspects: Aspects): Action[] {
   return actions;
 }
 
-export type ItemActions = AddAction;
+export class AddSuccessAction implements Action {
+  readonly type = AddSuccess;
+}
+
+export class AddFailureAction implements Action {
+  readonly type = AddFailure;
+}
+
+export type ItemActions = AddAction | AddSuccessAction | AddFailureAction;
