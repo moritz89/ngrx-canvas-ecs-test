@@ -2,8 +2,6 @@ import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { CanvasAspect } from '../models/aspects/canvas';
 import * as canvasAspect from '../actions/aspect/canvas.actions';
 
-const gridSpacing = 50;
-
 export interface State extends EntityState<CanvasAspect> {
   addedIds: string[];
   changedIds: string[];
@@ -27,11 +25,18 @@ export function reducer(
   action: canvasAspect.Actions
 ): State {
   switch (action.type) {
-    case canvasAspect.AddObject: {
-      const newState = adapter.addOne(action.payload.canvasAspect, state);
-      newState.addedIds = [action.payload.canvasAspect.id];
+    case canvasAspect.Add: {
+      const newState = adapter.addOne(action.payload.aspect, state);
+      newState.addedIds = [action.payload.aspect.id];
       newState.changedIds = [];
       newState.removedIds = [];
+      return newState;
+    }
+    case canvasAspect.Remove: {
+      const newState = adapter.removeOne(action.payload.id, state);
+      newState.addedIds = [];
+      newState.changedIds = [];
+      newState.removedIds = [action.payload.id];
       return newState;
     }
     case canvasAspect.MoveObject: {

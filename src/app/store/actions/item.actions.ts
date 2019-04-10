@@ -9,6 +9,7 @@ import * as waterAspect from '../actions/aspect/water.actions';
 export const Add = '[Item] Add';
 export const AddSuccess = '[Item] Add Success';
 export const AddFailure = '[Item] Add Failure';
+export const Remove = '[Item] Remove';
 
 export class AddAction implements Action {
   readonly type = Add;
@@ -20,37 +21,60 @@ export interface AddPayload {
   aspects: Aspects;
 }
 
-export function createAddAspectActions(aspects: Aspects): Action[] {
-  const actions = [];
-  if (aspects.canvasAspect) {
-    actions.push(
-      new canvasAspect.AddAction({ canvasAspect: aspects.canvasAspect })
-    );
-  }
-  if (aspects.electricalAspect) {
-    actions.push(
-      new electricalAspect.AddAction({
-        electricalAspect: aspects.electricalAspect
-      })
-    );
-  }
-  if (aspects.metaAspect) {
-    actions.push(new metaAspect.AddAction({ metaAspect: aspects.metaAspect }));
-  }
-  if (aspects.waterAspect) {
-    actions.push(
-      new waterAspect.AddAction({ waterAspect: aspects.waterAspect })
-    );
-  }
-  return actions;
-}
-
 export class AddSuccessAction implements Action {
   readonly type = AddSuccess;
 }
 
 export class AddFailureAction implements Action {
   readonly type = AddFailure;
+  constructor(public payload: AddPayload) {}
 }
 
-export type ItemActions = AddAction | AddSuccessAction | AddFailureAction;
+export class RemoveAction implements Action {
+  readonly type = Remove;
+  constructor(public payload: { id: string }) {}
+}
+
+export type ItemActions =
+  | AddAction
+  | AddSuccessAction
+  | AddFailureAction
+  | RemoveAction;
+
+export function createAddAspectActions(aspects: Aspects): Action[] {
+  const actions = [];
+  if (aspects.canvas) {
+    actions.push(new canvasAspect.AddAction({ aspect: aspects.canvas }));
+  }
+  if (aspects.electrical) {
+    actions.push(
+      new electricalAspect.AddAction({ aspect: aspects.electrical })
+    );
+  }
+  if (aspects.meta) {
+    actions.push(new metaAspect.AddAction({ aspect: aspects.meta }));
+  }
+  if (aspects.water) {
+    actions.push(new waterAspect.AddAction({ aspect: aspects.water }));
+  }
+  return actions;
+}
+
+export function createRemoveAspectActions(aspects: Aspects): Action[] {
+  const actions = [];
+  if (aspects.canvas) {
+    actions.push(new canvasAspect.RemoveAction({ id: aspects.canvas.id }));
+  }
+  if (aspects.electrical) {
+    actions.push(
+      new electricalAspect.RemoveAction({ id: aspects.electrical.id })
+    );
+  }
+  if (aspects.meta) {
+    actions.push(new metaAspect.RemoveAction({ id: aspects.meta.id }));
+  }
+  if (aspects.water) {
+    actions.push(new waterAspect.RemoveAction({ id: aspects.water.id }));
+  }
+  return actions;
+}

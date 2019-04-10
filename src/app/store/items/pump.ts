@@ -4,7 +4,7 @@ import * as item from '../actions/item.actions';
 
 export function createPump(): item.AddPayload {
   const id = uuid.v4();
-  const canvasAspect = {
+  const canvas = {
     id,
     type: 'rectangle',
     left: 50,
@@ -14,16 +14,16 @@ export function createPump(): item.AddPayload {
     height: 30,
     fill: 'blue'
   };
-  const electricalAspect = {
+  const electrical = {
     id,
     powerUsage: 12
   };
-  const metaAspect = {
+  const meta = {
     id,
     type: 'pump',
     name: 'main pump'
   };
-  const waterAspect = {
+  const water = {
     id,
     heightIncrease: 10,
     previousItems: null,
@@ -31,5 +31,5 @@ export function createPump(): item.AddPayload {
     isOpen: true
   };
 
-  return {id, aspects: {canvasAspect, electricalAspect, metaAspect, waterAspect}};
+  return { id, aspects: { canvas, electrical, meta, water } };
 }

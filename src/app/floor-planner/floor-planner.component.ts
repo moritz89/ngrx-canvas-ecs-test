@@ -22,21 +22,19 @@ export class FloorPlannerComponent implements OnInit, OnDestroy {
   // To be able to reference fabric objects by their ID, they are stored here
   objects: { [id: string]: fabric.Object } = {};
 
-  addedFabricObject$: Observable<fabric.Object[]>;
-  changedCanvasObjects$: Observable<CanvasAspect[]>;
-  removedCanvasObjects$: Observable<CanvasAspect[]>;
+  addedFabricObject$: Observable<fabric.Object[]> = this.store.select(
+    fromStore.getAddedFabricObject
+  );
+  changedCanvasObjects$: Observable<CanvasAspect[]> = this.store.select(
+    fromStore.getChangedCanvasObjects
+  );
+  removedCanvasObjects$: Observable<string[]> = this.store.select(
+    fromStore.getRemovedCanvasAspectIds
+  );
 
   private ngUnsubscribe: Subject<void> = new Subject<void>();
 
   constructor(private store: Store<fromStore.State>) {
-    this.addedFabricObject$ = store.select(fromStore.getAddedFabricObject);
-    this.changedCanvasObjects$ = store.select(
-      fromStore.getChangedCanvasObjects
-    );
-    this.removedCanvasObjects$ = store.select(
-      fromStore.getRemovedCanvasObjects
-    );
-
     this.addedFabricObject$
       .pipe(
         takeUntil(this.ngUnsubscribe),
@@ -61,14 +59,12 @@ export class FloorPlannerComponent implements OnInit, OnDestroy {
         this.objects[object.id].setCoords();
         this.canvas.renderAll();
       });
-    // this.removedCanvasObjects$
-    //   .pipe(
-    //     takeUntil(this.ngUnsubscribe),
-    //     mergeAll()
-    //   )
-    //   .subscribe(fabricObject => {
-    //     this.canvas.remove(fabricObject);
-    //   });
+    this.removedCanvasObjects$
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        mergeAll()
+      )
+      .subscribe(id => this.canvas.remove(this.objects[id]));
   }
 
   ngOnInit() {
@@ -90,7 +86,7 @@ export class FloorPlannerComponent implements OnInit, OnDestroy {
   private objectMovedHandler(options: any) {
     const target = options.target as fabric.Object;
     this.store.dispatch(
-      new canvasAspect.MoveAction({
+      new canvasAspect.MoveObjectAction({
         position: {
           id: target.name,
           point_tl: target.aCoords.tl
@@ -104,9 +100,9 @@ export class FloorPlannerComponent implements OnInit, OnDestroy {
   }
 
   delete() {
-    //   for (let pump of this.waterCycle.pumps) {
-    //     pump.delete();
-    //   }
+    Object.keys(this.objects).forEach(id =>
+      this.store.dispatch(new item.RemoveAction({id}))
+    );
   }
 
   clear() {
