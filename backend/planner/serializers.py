@@ -4,8 +4,6 @@ from rest_framework import serializers
 from .models import (
     CanvasAspect,
     ElectricalAspect,
-    Item,
-    ItemType,
     WaterAspect,
     Pump,
     Pipe,
@@ -40,37 +38,6 @@ class WaterAspectSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = WaterAspect
         fields = "__all__"
-
-
-class ItemTypeSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = ItemType
-        fields = "__all__"
-
-
-class ItemSerializer(serializers.HyperlinkedModelSerializer):
-    canvas_aspect = CanvasAspectSerializer()
-
-    class Meta:
-        model = Item
-        fields = ("id", "type", "name", "canvas_aspect")
-
-    def to_representation(self, instance):
-        result = super(ItemSerializer, self).to_representation(instance)
-        return OrderedDict(
-            [(key, result[key]) for key in result if result[key] is not None]
-        )
-
-    def create(self, validated_data):
-        import ipdb
-
-        ipdb.set_trace()
-
-        canvas_aspect_data = validated_data.pop("canvasAspect")
-        canvas_aspect = CanvasAspect.objects.create(**canvas_aspect_data)
-
-        item = Item.objects.create(canvas_aspect=canvas_aspect, **validated_data)
-        return item
 
 
 class PumpSerializer(serializers.HyperlinkedModelSerializer):

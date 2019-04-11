@@ -78,3 +78,11 @@ export function createRemoveAspectActions(aspects: Aspects): Action[] {
   }
   return actions;
 }
+
+export function stringifyAspects(
+  aspect: Aspects
+): { aspectString: string; url: string } {
+  let aspectString = '';
+  
+  return { aspectString: '', url: '' };
+}

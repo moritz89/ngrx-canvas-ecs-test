@@ -23,11 +23,6 @@ from planner import views
 router = routers.DefaultRouter()
 router.register(r"users", views.UserViewSet)
 router.register(r"groups", views.GroupViewSet)
-router.register(r"canvas-aspects", views.CanvasAspectViewSet)
-router.register(r"electrical-aspects", views.ElectricalAspectViewSet)
-router.register(r"item-types", views.ItemTypeViewSet)
-router.register(r"items", views.ItemViewSet)
-router.register(r"water-aspects", views.WaterAspectViewSet)
 router.register(r"pipes", views.PipeViewSet)
 router.register(r"pumps", views.PumpViewSet)
 
