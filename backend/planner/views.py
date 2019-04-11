@@ -6,10 +6,21 @@ from .serializers import (
     GroupSerializer,
     CanvasAspectSerializer,
     ElectricalAspectSerializer,
-    MetaAspectSerializer,
+    ItemTypeSerializer,
+    ItemSerializer,
+    PumpSerializer,
+    PipeSerializer,
     WaterAspectSerializer,
 )
-from .models import CanvasAspect, ElectricalAspect, MetaAspect, WaterAspect
+from .models import (
+    CanvasAspect,
+    ElectricalAspect,
+    Item,
+    ItemType,
+    Pump,
+    Pipe,
+    WaterAspect,
+)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -30,6 +41,16 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
 
+class ItemTypeViewSet(viewsets.ModelViewSet):
+    queryset = ItemType.objects.all()
+    serializer_class = ItemTypeSerializer
+
+
+class ItemViewSet(viewsets.ModelViewSet):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+
+
 class CanvasAspectViewSet(viewsets.ModelViewSet):
     queryset = CanvasAspect.objects.all()
     serializer_class = CanvasAspectSerializer
@@ -40,11 +61,16 @@ class ElectricalAspectViewSet(viewsets.ModelViewSet):
     serializer_class = ElectricalAspectSerializer
 
 
-class MetaAspectViewSet(viewsets.ModelViewSet):
-    queryset = MetaAspect.objects.all()
-    serializer_class = MetaAspectSerializer
-
-
 class WaterAspectViewSet(viewsets.ModelViewSet):
     queryset = WaterAspect.objects.all()
     serializer_class = WaterAspectSerializer
+
+
+class PumpViewSet(viewsets.ModelViewSet):
+    queryset = Pump.objects.all()
+    serializer_class = PumpSerializer
+
+
+class PipeViewSet(viewsets.ModelViewSet):
+    queryset = Pipe.objects.all()
+    serializer_class = PipeSerializer

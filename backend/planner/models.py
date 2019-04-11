@@ -2,8 +2,21 @@ from django.db import models
 import uuid
 
 
-class CanvasAspect(models.Model):
+class ItemType(models.Model):
+    typeName = models.CharField(max_length=20)
+
+
+class Item(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    type = models.ForeignKey(ItemType, on_delete=models.PROTECT)
+    name = models.CharField(max_length=20)
+
+
+class CanvasAspect(models.Model):
+    # item = models.OneToOneField(
+    #     Item, related_name="canvas_aspect", on_delete=models.CASCADE, primary_key=True
+    # )
+
     type = models.CharField(max_length=20)
 
     top = models.FloatField()
@@ -18,21 +31,35 @@ class CanvasAspect(models.Model):
 
 
 class ElectricalAspect(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    # item = models.OneToOneField(
+    #     Item,
+    #     related_name="electrical_aspect",
+    #     on_delete=models.CASCADE,
+    #     primary_key=True,
+    # )
+
     power_usage = models.FloatField()
 
 
-class MetaAspect(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    type = models.CharField(max_length=20)
-    name = models.CharField(max_length=20)
-
-
 class WaterAspect(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    # item = models.OneToOneField(Item, on_delete=models.CASCADE, primary_key=True)
 
     height_increase = models.FloatField()
     following_items = models.ManyToManyField(
         "self", related_name="previous_items", symmetrical=False, blank=True
     )
     is_open = models.BooleanField()
+
+
+class Pipe(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=20)
+    canvas_aspect = models.OneToOneField(CanvasAspect, on_delete=models.CASCADE)
+
+
+class Pump(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=20)
+    canvas_aspect = models.OneToOneField(CanvasAspect, on_delete=models.CASCADE)
+    electrical_aspect = models.OneToOneField(ElectricalAspect, on_delete=models.CASCADE)
+
