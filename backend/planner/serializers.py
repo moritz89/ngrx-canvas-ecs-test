@@ -1,13 +1,8 @@
+import re
 from collections import OrderedDict
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from .models import (
-    CanvasAspect,
-    ElectricalAspect,
-    WaterAspect,
-    Pump,
-    Pipe,
-)
+from .models import CanvasAspect, ElectricalAspect, WaterAspect, Pump, Pipe
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -54,6 +49,22 @@ class PumpSerializer(serializers.HyperlinkedModelSerializer):
         canvas_aspect = CanvasAspect.objects.create(**canvas_aspect_data)
         electrical_aspect_data = validated_data.pop("electrical_aspect")
         electrical_aspect = ElectricalAspect.objects.create(**electrical_aspect_data)
+
+        # If there are unhandled aspects, abort request to avoid data inconsistencies
+        unhandledAspects = []
+        for key in list(validated_data.keys()):
+            if "_aspect" in key:
+                unhandledAspects.append(key)
+            if "Aspect" in key:
+                unhandledAspects.append(key)
+
+        if unhandledAspects:
+            aspects = " ".join(unhandledAspects)
+            print(aspects)
+            raise serializers.ValidationError(
+                detail="Backend cannot handle pump aspects %s." % aspects
+            )
+
         pump = Pump.objects.create(
             canvas_aspect=canvas_aspect,
             electrical_aspect=electrical_aspect,

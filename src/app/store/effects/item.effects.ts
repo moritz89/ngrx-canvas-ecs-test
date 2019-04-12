@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import * as snakecaseKeys from 'snakecase-keys';
 
 import { Store, Action, select } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
@@ -29,10 +30,11 @@ export class ItemEffects {
   @Effect()
   addItem$: Observable<Action> = this.actions$.pipe(
     ofType<item.AddAction>(item.Add),
-    concatMap(action =>
-      concat(
+    concatMap(action => {
+      const { apiItem, url } = item.serializeAspects(action.payload.aspects);
+      return concat(
         item.createAddAspectActions(action.payload.aspects),
-        this.http.post(api, JSON.stringify(action.payload)).pipe(
+        this.http.post(url, snakecaseKeys(apiItem)).pipe(
           tap(res => console.log(res)),
           map(() => new item.AddSuccessAction()),
           catchError(err => {
@@ -40,8 +42,8 @@ export class ItemEffects {
             return of(new item.AddFailureAction(action.payload));
           })
         )
-      )
-    )
+      );
+    })
   );
 
   @Effect()

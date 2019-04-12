@@ -5,6 +5,24 @@ import * as canvasAspect from '../actions/aspect/canvas.actions';
 import * as electricalAspect from '../actions/aspect/electrical.actions';
 import * as metaAspect from '../actions/aspect/meta.actions';
 import * as waterAspect from '../actions/aspect/water.actions';
+import { CanvasAspect } from '../models/aspects/canvas';
+import { ElectricalAspect } from '../models/aspects/electrical';
+import { WaterAspect } from '../models/aspects/water';
+
+const urlBase = 'http://localhost:8000/';
+
+const Type2UrlPostfix = new Map<string, string>([
+  ['pump', 'pumps'],
+  ['pipe', 'pipes']
+]);
+
+export interface ApiItem {
+  id: string;
+  name: string;
+  canvasAspect?: CanvasAspect;
+  electricalAspect?: ElectricalAspect;
+  waterAspect?: WaterAspect;
+}
 
 export const Add = '[Item] Add';
 export const AddSuccess = '[Item] Add Success';
@@ -79,10 +97,29 @@ export function createRemoveAspectActions(aspects: Aspects): Action[] {
   return actions;
 }
 
-export function stringifyAspects(
-  aspect: Aspects
-): { aspectString: string; url: string } {
-  let aspectString = '';
-  
-  return { aspectString: '', url: '' };
+export function serializeAspects(
+  aspects: Aspects
+): { apiItem: ApiItem; url: string } {
+  const apiItem: ApiItem = {
+    id: aspects.meta.id,
+    name: aspects.meta.name,
+    canvasAspect: aspects.canvas,
+    electricalAspect: aspects.electrical,
+    waterAspect: aspects.water
+  };
+
+  const url = urlBase + Type2UrlPostfix.get(aspects.meta.type) + '/';
+
+  return { apiItem, url };
 }
+
+// export function deserializeAspects(apiItem: ApiItem, type: string): Aspects {
+//   const aspects: Aspects = {
+//     canvas: apiItem.canvasAspect,
+//     electrical: apiItem.electricalAspect,
+//     meta: { id: apiItem.id, name: apiItem.name, type },
+//     water: apiItem.waterAspect
+//   };
+
+//   return aspects;
+// }
